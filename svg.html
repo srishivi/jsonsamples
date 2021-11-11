@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>Business Process Lineage</title>    
+    <script src="https://d3js.org/d3.v5.min.js"></script> 
+<style>
+  line
+        {
+            fill:green;
+            stroke:blue;
+stroke-width:2px
+        }
+</style>
+
+    <style>
+        p
+        {
+            background: black;
+            color:white;
+            font-size:30px;
+            width:100px;
+            margin:20px;
+            padding:10px;
+        }
+        .person
+        {
+            background: indigo;
+            color:deeppink;
+            font-size:30px;
+            width:130px;
+            margin:20px;
+            padding:10px;
+        }
+	  path {
+         fill: None;
+         stroke: #fff;
+      }
+    </style>
+</head>
+<body>   
+<svg width="800" height="600" style="background:pink">
+<g>
+
+<line x1="0" y1="100" x2="800" y2="100"></line>
+
+<line x1="0" y1="300" x2="800" y2="300"></line>
+</g>
+</svg>
+
+    <script>
+
+        
+        var subbusiness = {
+            "business":{x:300,y:10,t:'business1'},
+			"subbusiness1":{x:100,y:150,t:'subbusiness1'},
+			"subbusiness2":{x:250,y:150,t:'subbusiness2'},
+			"subbusiness3":{x:400,y:150,t:'subbusiness3'},
+			"subbusiness4":{x:550,y:150,t:'subbusiness4'},
+			"table1":{x:100,y:400,t:'table1'},
+			"table2":{x:250,y:400,t:'table2'},
+			"table3":{x:400,y:400,t:'table3'},
+			"table4":{x:550,y:400,t:'table4'}
+		};
+
+	var links = [{'from': 'table1', 'to':'subbusiness2'},
+                {'from': 'table2', 'to':'subbusiness2'} , 
+                {'from': 'table3', 'to':'subbusiness2'}, 
+                {'from': 'table1', 'to':'subbusiness1'},
+                {'from': 'business', 'to':'subbusiness2'}];
+
+
+
+	var svg = d3.select("svg")
+
+	var business_array = svg.selectAll("g_bus").data(Object.values(subbusiness));
+        var g_bus_arr =business_array.enter().append("g");
+	
+        g_bus_arr.append("rect")
+        .attr("width", function(d){return 100;})
+         .attr("height", function(d){return 50;})
+        .attr("x", function(d,i){ return d.x;})
+        .attr("y", function(d,i){return d.y;})
+        .style("fill", "deeppink")
+        .style("stroke", "indigo")
+        .style("stroke-width",5).append("span").text("hello world");
+	
+	g_bus_arr.append("text").text(function(d,i){return d.t;}).attr("x", function(d,i){return d.x+5;}).attr("y",function(d,i){return d.y+30;} );
+
+	
+	
+	function create_path_d(link){
+	
+	from_id=link.from;
+	
+	to_id=link.to;
+		
+	console.log(to_id);
+	console.log(subbusiness[to_id]);
+	
+	from_x=subbusiness[from_id].x;
+	from_y=subbusiness[from_id].y;
+
+	to_x=subbusiness[to_id].x;
+	to_y=subbusiness[to_id].y;
+			
+	 var data = [[from_x+30, from_y+30], [to_x+30, to_y+30]];
+         var lineGenerator = d3.line();
+         var pathString = lineGenerator(data);
+		return pathString;
+	}
+
+	
+	svg.selectAll('g_paths').data(links)
+	.enter().append("g")
+	.append("path")
+	.attr("d", function(d){ return create_path_d(d) });
+
+
+    </script>
+</body>
+</html>
